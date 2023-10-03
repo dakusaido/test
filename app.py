@@ -1,0 +1,1 @@
+from loader import router, dp, bot
