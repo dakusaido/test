@@ -7,7 +7,7 @@ from aiogram.types import Message, CallbackQuery
 
 from src.datatypes.user.FactorialCallbackData import Factorial
 from src.datatypes.user import forms
-from src.utils.factorial import get_factorial
+from src.utils.factorial import Facto
 
 router = Router()
 
@@ -33,7 +33,11 @@ async def start_to_facto(
 
 @router.message(forms.CalculatingFactorial.start)
 async def final_facto(message: Message, state: FSMContext):
-    if not message.text.isdigit():
+
+    try:
+        number = int(message.text)
+
+    except ValueError:
         await message.reply(
             text="The text you wrote is not a number.\nPlease write a NUMBER",
             reply_markup=markup.utils.get_back("getting_factorial_number")
@@ -44,11 +48,11 @@ async def final_facto(message: Message, state: FSMContext):
         text="Calculating..."
     )
 
-    number = int(message.text)
-
-    facto = get_factorial(number)
+    facto = Facto()
+    result = facto.calculate_factorial(number)
 
     await message.reply(
-        text=str(facto)
+        text=str(result),
+        reply_markup=markup.utils.get_back("getting_factorial_number", not_edit=True)
     )
     await state.clear()

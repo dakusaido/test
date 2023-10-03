@@ -35,4 +35,8 @@ async def back_to_start(query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(Back.filter(F.method == "getting_factorial_number"))
 async def back_to_getting_user_methods(query: CallbackQuery, callback_data: Back, state: FSMContext):
+    if callback_data.not_edit:
+        await go_to_start(query, state)
+        return
+
     await back_to_start(query, state)
