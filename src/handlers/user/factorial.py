@@ -1,9 +1,12 @@
+import datetime
+import sys
+
 from aiogram.fsm.context import FSMContext
 
 import src.markups as markup
 
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, BufferedInputFile
 
 from src.datatypes.user.FactorialCallbackData import Factorial
 from src.datatypes.user import forms
@@ -11,6 +14,7 @@ from src.utils.factorial import Facto
 
 router = Router()
 
+sys.set_int_max_str_digits(0)
 
 @router.callback_query(Factorial.filter(F.start))
 async def start_to_facto(
@@ -49,10 +53,18 @@ async def final_facto(message: Message, state: FSMContext):
     )
 
     facto = Facto()
-    result = facto.calculate_factorial(number)
+    result = str(facto.calculate_factorial(number))
 
-    await message.reply(
-        text=str(result),
+    time = datetime.datetime.utcnow().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = "factorial-" + time + ".txt"
+
+    file = BufferedInputFile(
+        file=str.encode(result),
+        filename=filename
+    )
+
+    await message.answer_document(
+        document=file,
         reply_markup=markup.utils.get_back("getting_factorial_number", not_edit=True)
     )
     await state.clear()

@@ -39,5 +39,5 @@ pip install -r requirements.txt
 ### Для запуска используем:
 
 ```shell
-python app.py
+python main.py
 ```
